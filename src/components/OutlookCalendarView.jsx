@@ -51,6 +51,8 @@ function OutlookCalendarView() {
               },
             }
           );
+          console.log(response);
+          console.log(response.json());
           const data = await response.json();
           setEvents(data.value || []);
         } catch (error) {

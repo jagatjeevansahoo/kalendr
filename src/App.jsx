@@ -19,12 +19,11 @@ function App() {
 
   return (
     <div>
+      <h1>Calendar App</h1>
+      <OutlookCalendarView />
       {!accessToken ? (
         <>
-          <button onClick={() => googleLogin()}>
-            Sign in & Authorize Calendar
-          </button>
-          <OutlookCalendarView />
+          <button onClick={() => googleLogin()}>Google calendar</button>
         </>
       ) : (
         <GoogleCalendarView accessToken={accessToken} />

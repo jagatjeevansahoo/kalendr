@@ -44,7 +44,7 @@ function OutlookCalendarView() {
   if (!account) {
     return (
       <button onClick={() => instance.loginRedirect(loginRequest)}>
-        Login
+        Outlook calendar
       </button>
     ); // or loginPopup()
   }

@@ -1,3 +1,9 @@
+## Problem statement
+While working with client's internal team, we have client's calendar for the same. Since we are having a personal calendar, Thoughtworks calendar and Client's calendar, it becomes really hectic to manage parallel meet. 
+
+This project would help in collating the calendars and have a single view so that none of the meetings are missed and we can plan the day better without hustle.
+
+
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.

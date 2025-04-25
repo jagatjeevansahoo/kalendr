@@ -6,7 +6,7 @@ const msalConfig = {
   auth: {
     clientId: "9e8c335e-9dd1-40b1-b5b4-3bc3d1973843", // Replace with your Application ID from Azure
     authority: `https://login.microsoftonline.com/${tenantId}`, // Replace with your Tenant ID or "common" for multi-tenant
-    redirectUri: "http://localhost:5173", // Your redirect URI
+    redirectUri: "/", // Your redirect URI
   },
   cache: {
     cacheLocation: "sessionStorage", // or "localStorage"

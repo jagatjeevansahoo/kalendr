@@ -3,6 +3,7 @@ import { useGoogleLogin } from "@react-oauth/google";
 import "./App.css";
 import { useState } from "react";
 import GoogleCalendarView from "./components/GoogleCalendarView";
+import OutlookCalendarView from "./components/OutlookCalendarView";
 
 function App() {
   const [accessToken, setAccessToken] = useState(null);
@@ -19,9 +20,12 @@ function App() {
   return (
     <div>
       {!accessToken ? (
-        <button onClick={() => googleLogin()}>
-          Sign in & Authorize Calendar
-        </button>
+        <>
+          <button onClick={() => googleLogin()}>
+            Sign in & Authorize Calendar
+          </button>
+          <OutlookCalendarView />
+        </>
       ) : (
         <GoogleCalendarView accessToken={accessToken} />
       )}

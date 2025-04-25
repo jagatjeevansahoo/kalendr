@@ -1,61 +1,66 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useMsal, useAccount } from "@azure/msal-react";
+import { loginRequest } from "../configs/outlook";
 
-const OutlookCalendarView = () => {
-  const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+function OutlookCalendarView() {
+  const { instance, accounts, inProgress } = useMsal();
+  const account = useAccount(accounts[0] || {});
+  const [accessToken, setAccessToken] = useState(null);
 
   useEffect(() => {
-    const YOUR_ACCESS_TOKEN = "secretGOCSPX-pPaPny0GzoJyqZ9XkSDhwJRWSAlc";
-    const fetchOutlookEvents = async () => {
-      try {
-        const response = await fetch(
-          "https://graph.microsoft.com/v1.0/me/events",
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${YOUR_ACCESS_TOKEN}`, // Replace with your access token
-              "Content-Type": "application/json",
-            },
+    const getToken = async () => {
+      if (account) {
+        const request = {
+          ...loginRequest,
+          account: account,
+        };
+
+        try {
+          const response = await instance.acquireTokenSilent(request);
+          setAccessToken(response.accessToken);
+        } catch (error) {
+          if (error.name === "InteractionRequiredAuthError") {
+            // Fallback to interaction.  Consider using Popup or Redirect based on user experience.
+            instance
+              .loginPopup(loginRequest)
+              .then((response) => {
+                setAccessToken(response.accessToken);
+              })
+              .catch((e) => console.error(e)); // handle login errors
+          } else {
+            console.error("Token Error", error);
           }
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch events");
         }
-        const data = await response.json();
-        setEvents(data.value);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
       }
     };
 
-    fetchOutlookEvents();
-  }, []);
+    getToken();
+  }, [account, instance]);
 
-  if (loading) {
-    return <div>Loading events...</div>;
+  if (inProgress === "login") {
+    return <div>Logging in...</div>; // Or a loading spinner
   }
 
-  if (error) {
-    return <div>Error: {error}</div>;
+  if (!account) {
+    return (
+      <button onClick={() => instance.loginRedirect(loginRequest)}>
+        Login
+      </button>
+    ); // or loginPopup()
   }
 
   return (
     <div>
-      <h2>Outlook Calendar Events</h2>
-      <ul>
-        {events.map((event) => (
-          <li key={event.id}>
-            <strong>{event.subject}</strong> -{" "}
-            {new Date(event.start.dateTime).toLocaleString()} to{" "}
-            {new Date(event.end.dateTime).toLocaleString()}
-          </li>
-        ))}
-      </ul>
+      {accessToken ? (
+        <div>
+          <p>Logged in as {account.username}</p>
+          {/* Add functions and components to fetch/write events here, using the accessToken */}
+        </div>
+      ) : (
+        <p>Not Authorized.</p>
+      )}
     </div>
   );
-};
+}
 
 export default OutlookCalendarView;

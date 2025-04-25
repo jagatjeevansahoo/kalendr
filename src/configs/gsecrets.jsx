@@ -1,5 +1,3 @@
-export const CLIENT_ID =
-  "757721096890-7q81vm96b91kaqlfao264dhv7g886sfb.apps.googleusercontent.com"; // Replace with your Google Client ID
-
-export const API_KEY = "AIzaSyD74DnkwPWc_khxjzRSLaWgdpB1Wusyz4g"; // Replace with your Google API Key
-export const SCOPES = "https://www.googleapis.com/auth/calendar.readonly";
+export const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID; // Read from environment variable
+export const API_KEY = import.meta.env.VITE_GOOGLE_API_KEY; // Read from environment variable
+export const SCOPES = import.meta.env.VITE_GOOGLE_SCOPES; // Read from environment variable

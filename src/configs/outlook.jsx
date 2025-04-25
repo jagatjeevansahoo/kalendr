@@ -1,13 +1,17 @@
-import { PublicClientApplication } from "@azure/msal-browser";
+import { InteractionType, PublicClientApplication } from "@azure/msal-browser";
 
-const tenantId = "487c7b14-59a9-4603-86ef-e9981b30a943"; // Replace with your Tenant ID
+const tenantId = import.meta.env.VITE_OUTLOOK_TENANT_ID; // Read from environment variable
+const clientId = import.meta.env.VITE_OUTLOOK_CLIENT_ID; // Read from environment variable
+const redirectUri = import.meta.env.VITE_OUTLOOK_REDIRECT_URI; // Read from environment variable
+const postLogoutRedirectUri = import.meta.env
+  .VITE_OUTLOOK_POST_LOGOUT_REDIRECT_URI; // Read from environment variable
 
 const msalConfig = {
   auth: {
-    clientId: "9e8c335e-9dd1-40b1-b5b4-3bc3d1973843", // Replace with your Application ID from Azure
-    authority: `https://login.microsoftonline.com/${tenantId}`, // Replace with your Tenant ID or "common" for multi-tenant
-    redirectUri: "/", // Your redirect URI
-    postLogoutRedirectUri: "/", // Your post-logout redirect URI
+    clientId: clientId, // Application ID from Azure
+    authority: `https://login.microsoftonline.com/${tenantId}`, // Tenant-specific authority
+    redirectUri: redirectUri, // Redirect URI
+    postLogoutRedirectUri: postLogoutRedirectUri, // Post-logout redirect URI
   },
   cache: {
     cacheLocation: "sessionStorage", // or "localStorage"
@@ -18,8 +22,8 @@ const msalConfig = {
 export const msalInstance = new PublicClientApplication(msalConfig);
 
 export const loginRequest = {
-  scopes: ["Calendars.ReadWrite"], // Request the necessary scopes
-  // interactionType: InteractionType.Redirect, // Or InteractionType.Popup,
+  scopes: ["Calendars.ReadWrite", "Calendars.Read"], // Request the necessary scopes
+  interactionType: InteractionType.Popup, // Or InteractionType.Redirect
 };
 
 export const graphConfig = {

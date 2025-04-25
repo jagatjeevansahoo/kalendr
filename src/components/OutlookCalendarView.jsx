@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useMsal, useAccount } from "@azure/msal-react";
 import { loginRequest } from "../configs/outlook";
+import axios from "axios";
 
 function OutlookCalendarView() {
   const { instance, accounts, inProgress } = useMsal();
@@ -19,6 +20,7 @@ function OutlookCalendarView() {
         try {
           const response = await instance.acquireTokenSilent(request);
           setAccessToken(response.accessToken);
+          console.log("My access token is", response.accessToken);
         } catch (error) {
           if (error.name === "InteractionRequiredAuthError") {
             instance
@@ -40,21 +42,18 @@ function OutlookCalendarView() {
   useEffect(() => {
     const fetchCalendarEvents = async () => {
       if (accessToken) {
+        console.log("validating access token", accessToken);
         try {
-          const response = await fetch(
+          const response = await axios.get(
             "https://graph.microsoft.com/v1.0/me/events",
             {
-              method: "GET",
               headers: {
                 Authorization: `Bearer ${accessToken}`,
                 "Content-Type": "application/json",
               },
             }
           );
-          console.log(response);
-          console.log(response.json());
-          const data = await response.json();
-          setEvents(data.value || []);
+          setEvents(response.data.value || []);
         } catch (error) {
           console.error("Error fetching calendar events:", error);
         }
